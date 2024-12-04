@@ -1,0 +1,304 @@
+4x4白色格子 其中有一個灰色格子 可以被方向鍵控制上下左右移動
+
+
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4x4 Grid with Movable Gray Square</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 50px);
+            grid-template-rows: repeat(4, 50px);
+            gap: 5px;
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .gray {
+            background-color: gray;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid" id="grid">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+    </div>
+
+    <script>
+        const grid = document.getElementById('grid');
+        const cells = grid.querySelectorAll('.cell');
+        let grayIndex = 5; // Starting position of the gray square
+
+        cells[grayIndex].classList.add('gray');
+
+        function moveGraySquare(newIndex) {
+            if (newIndex >= 0 && newIndex < cells.length) {
+                cells[grayIndex].classList.remove('gray');
+                grayIndex = newIndex;
+                cells[grayIndex].classList.add('gray');
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            switch (e.key) {
+                case 'ArrowUp':
+                    if (grayIndex >= 4) moveGraySquare(grayIndex - 4);
+                    break;
+                case 'ArrowDown':
+                    if (grayIndex < 12) moveGraySquare(grayIndex + 4);
+                    break;
+                case 'ArrowLeft':
+                    if (grayIndex % 4 !== 0) moveGraySquare(grayIndex - 1);
+                    break;
+                case 'ArrowRight':
+                    if ((grayIndex + 1) % 4 !== 0) moveGraySquare(grayIndex + 1);
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>
+
+方向鍵移動時 不要拉動網頁
+
+
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4x4 Grid with Movable Gray Square</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            overflow: hidden; /* Prevent scrolling */
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 50px);
+            grid-template-rows: repeat(4, 50px);
+            gap: 5px;
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .gray {
+            background-color: gray;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid" id="grid">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+    </div>
+
+    <script>
+        const grid = document.getElementById('grid');
+        const cells = grid.querySelectorAll('.cell');
+        let grayIndex = 5; // Starting position of the gray square
+
+        cells[grayIndex].classList.add('gray');
+
+        function moveGraySquare(newIndex) {
+            if (newIndex >= 0 && newIndex < cells.length) {
+                cells[grayIndex].classList.remove('gray');
+                grayIndex = newIndex;
+                cells[grayIndex].classList.add('gray');
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            e.preventDefault(); // Prevent default action to stop page scrolling
+            switch (e.key) {
+                case 'ArrowUp':
+                    if (grayIndex >= 4) moveGraySquare(grayIndex - 4);
+                    break;
+                case 'ArrowDown':
+                    if (grayIndex < 12) moveGraySquare(grayIndex + 4);
+                    break;
+                case 'ArrowLeft':
+                    if (grayIndex % 4 !== 0) moveGraySquare(grayIndex - 1);
+                    break;
+                case 'ArrowRight':
+                    if ((grayIndex + 1) % 4 !== 0) moveGraySquare(grayIndex + 1);
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>
+
+在白色格子裡隨機放入1到15數字
+
+
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4x4 Grid with Movable Gray Square</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            overflow: hidden; /* Prevent scrolling */
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 50px);
+            grid-template-rows: repeat(4, 50px);
+            gap: 5px;
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .gray {
+            background-color: gray;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid" id="grid">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+    </div>
+
+    <script>
+        const grid = document.getElementById('grid');
+        const cells = grid.querySelectorAll('.cell');
+        let numbers = Array.from({ length: 15 }, (_, i) => i + 1);
+        let grayIndex = 15; // Starting position of the gray square (empty cell)
+
+        // Shuffle the numbers array
+        for (let i = numbers.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+        }
+
+        // Place numbers in the grid
+        cells.forEach((cell, index) => {
+            if (index < 15) {
+                cell.textContent = numbers[index];
+            } else {
+                cell.classList.add('gray');
+            }
+        });
+
+        function moveGraySquare(newIndex) {
+            if (newIndex >= 0 && newIndex < cells.length) {
+                cells[grayIndex].textContent = cells[newIndex].textContent;
+                cells[newIndex].textContent = '';
+                cells[grayIndex].classList.remove('gray');
+                grayIndex = newIndex;
+                cells[grayIndex].classList.add('gray');
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            e.preventDefault(); // Prevent default action to stop page scrolling
+            switch (e.key) {
+                case 'ArrowUp':
+                    if (grayIndex < 12) moveGraySquare(grayIndex + 4);
+                    break;
+                case 'ArrowDown':
+                    if (grayIndex >= 4) moveGraySquare(grayIndex - 4);
+                    break;
+                case 'ArrowLeft':
+                    if ((grayIndex + 1) % 4 !== 0) moveGraySquare(grayIndex + 1);
+                    break;
+                case 'ArrowRight':
+                    if (grayIndex % 4 !== 0) moveGraySquare(grayIndex - 1);
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>
