@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4x4 數字拼圖</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        .puzzle-container {
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+            grid-gap: 5px;
+        }
+        .tile {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #6c5ce7;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .tile.empty {
+            background-color: #dfe6e9;
+            cursor: default;
+        }
+        #status {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="puzzle-container" id="puzzle"></div>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        const puzzleContainer = document.getElementById("puzzle");
+        const statusDiv = document.getElementById("status");
+        let tiles = [];
+        const size = 4;
+
+        // 初始化拼圖
+        function initPuzzle() {
+            tiles = Array.from({ length: size * size }, (_, i) => i + 1);
+            tiles[size * size - 1] = ""; // 最後一格為空
+            shuffleByMoves(100); // 通過模擬移動打亂拼圖
+            renderPuzzle();
+        }
+
+        // 通過隨機移動打亂拼圖
+        function shuffleByMoves(moveCount) {
+            let emptyIndex = tiles.indexOf("");
+
+            for (let i = 0; i < moveCount; i++) {
+                const validMoves = getValidMoves(emptyIndex);
+                const randomMove = validMoves[Math.floor(Math.random() * validMoves.length)];
+                // 交換空格與目標位置
+                [tiles[emptyIndex], tiles[randomMove]] = [tiles[randomMove], tiles[emptyIndex]];
+                emptyIndex = randomMove; // 更新空格的位置
+            }
+        }
+
+        // 獲取空格的有效移動位置
+        function getValidMoves(emptyIndex) {
+            const moves = [];
+            const row = Math.floor(emptyIndex / size);
+            const col = emptyIndex % size;
+
+            // 上下左右移動
+            if (row > 0) moves.push(emptyIndex - size); // 上
+            if (row < size - 1) moves.push(emptyIndex + size); // 下
+            if (col > 0) moves.push(emptyIndex - 1); // 左
+            if (col < size - 1) moves.push(emptyIndex + 1); // 右
+
+            return moves;
+        }
+
+        // 渲染拼圖
+        function renderPuzzle() {
+            puzzleContainer.innerHTML = "";
+            tiles.forEach((tile, index) => {
+                const tileDiv = document.createElement("div");
+                tileDiv.classList.add("tile");
+                if (tile === "") tileDiv.classList.add("empty");
+                tileDiv.textContent = tile;
+                tileDiv.addEventListener("click", () => moveTile(index));
+                puzzleContainer.appendChild(tileDiv);
+            });
+            checkWin();
+        }
+
+        // 移動方塊
+        function moveTile(index) {
+            const emptyIndex = tiles.indexOf("");
+            const validMoves = getValidMoves(emptyIndex);
+
+            if (validMoves.includes(index)) {
+                [tiles[emptyIndex], tiles[index]] = [tiles[index], tiles[emptyIndex]];
+                renderPuzzle();
+            }
+        }
+
+        // 檢查是否完成
+        function checkWin() {
+            if (tiles.slice(0, -1).every((tile, i) => tile === i + 1)) {
+                statusDiv.textContent = "恭喜你完成拼圖！🎉";
+            } else {
+                statusDiv.textContent = "";
+            }
+        }
+
+        // 初始化遊戲
+        initPuzzle();
+        // 監聽鍵盤事件
+        window.addEventListener("keydown", (event) => {
+            const emptyIndex = tiles.indexOf("");
+            let targetIndex;
+
+            switch (event.key) {
+                case "ArrowUp":
+                    targetIndex = emptyIndex + size; // 空格下移
+                    break;
+                case "ArrowDown":
+                    targetIndex = emptyIndex - size; // 空格上移
+                    break;
+                case "ArrowLeft":
+                    targetIndex = emptyIndex + 1; // 空格右移
+                    break;
+                case "ArrowRight":
+                    targetIndex = emptyIndex - 1; // 空格左移
+                    break;
+                default:
+                    return; // 忽略其他按鍵
+            }
+
+            if (targetIndex >= 0 && targetIndex < size * size && 
+                getValidMoves(emptyIndex).includes(targetIndex)) {
+                [tiles[emptyIndex], tiles[targetIndex]] = [tiles[targetIndex], tiles[emptyIndex]];
+                renderPuzzle();
+            }
+        });
+    </script>
+</body>
+</html>

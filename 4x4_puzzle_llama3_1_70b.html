@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>4x4黑白格子遊戲</title>
+  <style>
+    /* 格子的樣式 */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+      width: 200px;
+      height: 200px;
+      margin: 50px auto;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 5px;
+      box-sizing: border-box;
+    }
+    
+    /* 每個格子的樣式 */
+    .cell {
+      width: 45px;
+      height: 45px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    /* 當前的格子樣式 */
+    .current {
+      background-color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="grid" id="grid"></div>
+  <div id="game-result"></div>
+  <script>
+    // 生成格子
+    const grid = document.getElementById('grid');
+    for (let i = 0; i < 16; i++) {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      if (i < 15) {
+        cell.textContent = i + 1;
+      }
+      grid.appendChild(cell);
+    }
+
+    // 最後一個格子變成灰色
+    const cells = document.querySelectorAll('.cell');
+    cells[15].classList.add('current');
+
+    // 玩家可以用方向鍵控制灰色格子
+    let currentIndex = 15;
+    document.addEventListener('keydown', (e) => {
+      switch (e.key) {
+        // 上下顛倒
+        case 'ArrowUp':
+          if (currentIndex < 12) {
+            const newIndex = currentIndex + 4;
+            swapCells(currentIndex, newIndex);
+            currentIndex += 4;
+          }
+          break;
+        case 'ArrowDown':
+          if (currentIndex > 3) {
+            const newIndex = currentIndex - 4;
+            swapCells(currentIndex, newIndex);
+            currentIndex -= 4;
+          }
+          break;
+        // 左右顛倒
+        case 'ArrowLeft':
+          if (currentIndex % 4 < 3) {
+            const newIndex = currentIndex + 1;
+            swapCells(currentIndex, newIndex);
+            currentIndex += 1;
+          }
+          break;
+        case 'ArrowRight':
+          if (currentIndex % 4 > 0) {
+            const newIndex = currentIndex - 1;
+            swapCells(currentIndex, newIndex);
+            currentIndex -= 1;
+          }
+          break;
+      }
+
+      // 檢查是否完成遊戲
+      checkGameResult();
+    });
+
+    // 交換格子的函式
+    function swapCells(index1, index2) {
+      const cell1 = cells[index1];
+      const cell2 = cells[index2];
+      const temp = cell1.classList.contains('current');
+      cell1.classList.toggle('current', cell2.classList.contains('current'));
+      cell2.classList.toggle('current', temp);
+      const tempText = cell1.textContent;
+      cell1.textContent = cell2.textContent;
+      cell2.textContent = tempText;
+    }
+
+    // 檢查遊戲結果
+    function checkGameResult() {
+      const gameResultElement = document.getElementById('game-result');
+      for (let i = 0; i < cells.length - 1; i++) {
+        if (cells[i].textContent !== (i + 1).toString()) {
+          gameResultElement.textContent = '';
+          return;
+        }
+      }
+      gameResultElement.textContent = '遊戲完成!!';
+    }
+
+    // 隨機移動灰色格子100次
+    function randomMove() {
+      const directions = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+      let newDirection;
+      do {
+        newDirection = directions[Math.floor(Math.random() * 4)];
+      } while (
+        (newDirection === 'ArrowUp' && currentIndex < 4) ||
+        (newDirection === 'ArrowDown' && currentIndex > 11) ||
+        (newDirection === 'ArrowLeft' && currentIndex % 4 === 0) ||
+        (newDirection === 'ArrowRight' && currentIndex % 4 === 3)
+      );
+      switch (newDirection) {
+        case 'ArrowUp':
+          swapCells(currentIndex, currentIndex - 4);
+          currentIndex -= 4;
+          break;
+        case 'ArrowDown':
+          swapCells(currentIndex, currentIndex + 4);
+          currentIndex += 4;
+          break;
+        case 'ArrowLeft':
+          swapCells(currentIndex, currentIndex - 1);
+          currentIndex -= 1;
+          break;
+        case 'ArrowRight':
+          swapCells(currentIndex, currentIndex + 1);
+          currentIndex += 1;
+          break;
+      }
+    }
+
+    // 執行100次隨機移動
+    for (let i = 0; i < 100; i++) {
+      randomMove();
+    }
+  </script>
+</body>
+</html>
